@@ -6,9 +6,10 @@ import com.kotlin.base.data.protocol.BaseResp
 import com.kotlin.user.data.api.UserApi
 import com.kotlin.user.data.protocol.RegisterReq
 import rx.Observable
+import javax.inject.Inject
 
 //真正访问网络
-class UserRepository {
+class UserRepository @Inject constructor() {
 
     fun register(mobile: String, pwd: String, verifyCode: String): Observable<BaseResp<String>> {
         Log.d("mock-result","UserRepository发起请求")

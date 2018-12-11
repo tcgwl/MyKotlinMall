@@ -5,6 +5,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.kotlin.base.injection.component.AppComponent;
+import com.kotlin.base.injection.component.DaggerAppComponent;
+import com.kotlin.base.injection.module.AppModule;
+
 public class BaseApplication extends Application {
 
     private static Context mContext;
@@ -12,6 +16,8 @@ public class BaseApplication extends Application {
     private static long mMainTreadId;
     private static Looper mMainThreadLooper;
     private static Handler mHandler;
+
+    public AppComponent appComponent;
 
     @Override
     public void onCreate() {
@@ -22,6 +28,12 @@ public class BaseApplication extends Application {
         mMainThreadLooper = getMainLooper();
         mHandler = new Handler();
         super.onCreate();
+
+        initAppInjection();
+    }
+
+    private void initAppInjection() {
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }
 
     public static Context getContext() {
