@@ -17,8 +17,9 @@ class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView {
         mPresenter = RegisterPresenter()
         mPresenter.mView = this
 
+        //验证码默认 123456
         mRegisterBtn.setOnClickListener {
-            mPresenter.register("", "", "")
+            mPresenter.register(mMobileEt.text.toString(), mVerifyCodeEt.text.toString(), mPwdEt.text.toString())
         }
     }
 
