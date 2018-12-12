@@ -7,7 +7,8 @@ import com.kotlin.user.ui.activity.RegisterActivity
 import dagger.Component
 
 @PerComponentScope
-@Component(dependencies = arrayOf(ActivityComponent::class), modules = arrayOf(UserModule::class))
+@Component(dependencies = arrayOf(ActivityComponent::class),
+        modules = arrayOf(UserModule::class))
 interface UserComponent {
     fun inject(activity: RegisterActivity)
 }
