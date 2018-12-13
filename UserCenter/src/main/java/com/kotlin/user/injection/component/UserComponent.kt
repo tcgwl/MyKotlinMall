@@ -6,6 +6,9 @@ import com.kotlin.user.injection.module.UserModule
 import com.kotlin.user.ui.activity.RegisterActivity
 import dagger.Component
 
+/**
+ * 组件级别Component
+ */
 @PerComponentScope
 @Component(dependencies = arrayOf(ActivityComponent::class),
         modules = arrayOf(UserModule::class))

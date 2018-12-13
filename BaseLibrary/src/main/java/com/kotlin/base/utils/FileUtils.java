@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
-import android.widget.TextView;
+
+import com.kotlin.base.common.BaseApplication;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,7 +32,7 @@ import java.util.Locale;
  * Created by Archer on 2018/2/8.
  */
 
-public class FileUtil {
+public class FileUtils {
     //格式化的模板
     private static final String TIME_FORMAT = "_yyyyMMdd_HHmmss";
 
@@ -155,7 +155,7 @@ public class FileUtil {
     }
 
     public static File writeToDisk(InputStream is, String dir, String name) {
-        final File file = FileUtil.createFile(dir, name);
+        final File file = FileUtils.createFile(dir, name);
         BufferedInputStream bis = null;
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
@@ -199,7 +199,7 @@ public class FileUtil {
     }
 
     public static File writeToDisk(InputStream is, String dir, String prefix, String extension) {
-        final File file = FileUtil.createFileByTime(dir, prefix, extension);
+        final File file = FileUtils.createFileByTime(dir, prefix, extension);
         BufferedInputStream bis = null;
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
@@ -248,12 +248,12 @@ public class FileUtil {
     private static void refreshDCIM() {
         if (Build.VERSION.SDK_INT >= 19) {
             //兼容android4.4版本，只扫描存放照片的目录
-            MediaScannerConnection.scanFile(UIUtils.getContext(),
+            MediaScannerConnection.scanFile(BaseApplication.context,
                     new String[]{Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath()},
                     null, null);
         } else {
             //扫描整个SD卡来更新系统图库，当文件很多时用户体验不佳，且不适合4.4以上版本
-            UIUtils.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" +
+            BaseApplication.context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" +
                     Environment.getExternalStorageDirectory())));
         }
     }
@@ -262,7 +262,7 @@ public class FileUtil {
      * 读取raw目录中的文件,并返回为字符串
      */
     public static String getRawFile(int id) {
-        final InputStream is = UIUtils.getContext().getResources().openRawResource(id);
+        final InputStream is = BaseApplication.context.getResources().openRawResource(id);
         final BufferedInputStream bis = new BufferedInputStream(is);
         final InputStreamReader isr = new InputStreamReader(bis);
         final BufferedReader br = new BufferedReader(isr);
@@ -287,12 +287,6 @@ public class FileUtil {
         return stringBuilder.toString();
     }
 
-
-    public static void setIconFont(String path, TextView textView) {
-        final Typeface typeface = Typeface.createFromAsset(UIUtils.getContext().getAssets(), path);
-        textView.setTypeface(typeface);
-    }
-
     /**
      * 读取assets目录下的文件,并返回字符串
      */
@@ -302,7 +296,7 @@ public class FileUtil {
         InputStreamReader isr = null;
         BufferedReader br = null;
         StringBuilder stringBuilder = null;
-        final AssetManager assetManager = UIUtils.getContext().getAssets();
+        final AssetManager assetManager = BaseApplication.context.getAssets();
         try {
             is = assetManager.open(name);
             bis = new BufferedInputStream(is);

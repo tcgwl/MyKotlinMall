@@ -4,6 +4,9 @@ import com.kotlin.base.data.protocol.BaseResp
 import rx.Observable
 import rx.functions.Func1
 
+/**
+ * Boolean数据类型转换封装
+ */
 class BaseFuncBoolean<T>: Func1<BaseResp<T>, Observable<Boolean>> {
 
     override fun call(t: BaseResp<T>): Observable<Boolean> {

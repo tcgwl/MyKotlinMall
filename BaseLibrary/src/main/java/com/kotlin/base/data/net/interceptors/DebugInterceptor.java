@@ -2,7 +2,7 @@ package com.kotlin.base.data.net.interceptors;
 
 import android.support.annotation.RawRes;
 
-import com.kotlin.base.utils.FileUtil;
+import com.kotlin.base.utils.FileUtils;
 
 import java.io.IOException;
 
@@ -25,6 +25,9 @@ public class DebugInterceptor extends BaseInterceptor {
         this.DEBUG_RAW_ID = rawId;
     }
 
+    /**
+     * 返回自定义数据
+     */
     private Response getResponse(Interceptor.Chain chain, String json) {
         return new Response.Builder()
                 .code(200)
@@ -37,7 +40,7 @@ public class DebugInterceptor extends BaseInterceptor {
     }
 
     private Response debugResponse(Interceptor.Chain chain, @RawRes int rawId) {
-        final String json = FileUtil.getRawFile(rawId);
+        final String json = FileUtils.getRawFile(rawId);
         return getResponse(chain, json);
     }
 
@@ -45,6 +48,7 @@ public class DebugInterceptor extends BaseInterceptor {
     public Response intercept(Interceptor.Chain chain) throws IOException {
         final String url = chain.request().url().toString();
         if (url.contains(DEBUG_URL)) {
+            //拦截特定url，返回自定义数据
             return debugResponse(chain, DEBUG_RAW_ID);
         }
         return chain.proceed(chain.request());

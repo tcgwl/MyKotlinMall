@@ -10,26 +10,36 @@ import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
+/**
+ * Kotlin通用扩展
+ */
+
+//扩展Observable执行
 fun <T> Observable<T>.execute(subscriber: BaseSubscriber<T>, lifecycleProvider: LifecycleProvider<*>) {
-    this.observeOn(AndroidSchedulers.mainThread())
+    this.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .compose(lifecycleProvider.bindToLifecycle())
-            .subscribeOn(Schedulers.io())
             .subscribe(subscriber)
 }
 
+//扩展通用数据类型转换
 fun <T> Observable<BaseResp<T>>.convert(): Observable<T> {
     return this.flatMap(BaseFunc())
 }
 
+//扩展Boolean数据类型转换
 fun <T> Observable<BaseResp<T>>.convertBoolean(): Observable<Boolean> {
     return this.flatMap(BaseFuncBoolean())
 }
 
-fun View.onClick(listener: View.OnClickListener) {
+//扩展点击事件
+fun View.onClick(listener: View.OnClickListener):View {
     this.setOnClickListener(listener)
+    return this
 }
 
-//函数作为参数传递
-fun View.onClick(method: ()->Unit) {
+//扩展点击事件，参数为方法
+fun View.onClick(method: ()->Unit):View {
     this.setOnClickListener { method() }
+    return this
 }
