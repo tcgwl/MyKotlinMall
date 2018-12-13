@@ -1,7 +1,8 @@
 package com.kotlin.user.ui.activity
 
 import android.os.Bundle
-import com.kotlin.base.common.AppManager
+import android.view.View
+import com.kotlin.base.ext.enable
 import com.kotlin.base.ext.onClick
 import com.kotlin.base.ui.activity.BaseMvpActivity
 import com.kotlin.user.R
@@ -12,28 +13,33 @@ import com.kotlin.user.presenter.view.RegisterView
 import kotlinx.android.synthetic.main.activity_register.*
 import org.jetbrains.anko.toast
 
-class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView {
-
-    private var pressTime:Long = 0
+/**
+ * 注册界面
+ */
+class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView, View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        //验证码默认 123456
-//        mRegisterBtn.setOnClickListener {
-//            mPresenter.register(mMobileEt.text.toString(), mVerifyCodeEt.text.toString(), mPwdEt.text.toString())
-//        }
-//        mRegisterBtn.onClick(object: View.OnClickListener{
-//            override fun onClick(v: View?) {
-//                mPresenter.register(mMobileEt.text.toString(), mVerifyCodeEt.text.toString(), mPwdEt.text.toString())
-//            }
-//        })
-        mRegisterBtn.onClick {
-            mPresenter.register(mMobileEt.text.toString(), mVerifyCodeEt.text.toString(), mPwdEt.text.toString())
-        }
+        initView()
+
     }
 
+    private fun initView() {
+        mRegisterBtn.enable(mMobileEt, {isBtnEnable()})
+        mRegisterBtn.enable(mVerifyCodeEt, {isBtnEnable()})
+        mRegisterBtn.enable(mPwdEt, {isBtnEnable()})
+        mRegisterBtn.enable(mPwdConfirmEt, {isBtnEnable()})
+
+        //验证码默认 123456
+        mVerifyCodeBtn.onClick(this)
+        mRegisterBtn.onClick(this)
+    }
+
+    /**
+     * Dagger注册
+     */
     override fun injectComponent() {
         DaggerUserComponent.builder()
                 .activityComponent(mActivityComponent)
@@ -44,17 +50,35 @@ class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView {
         mPresenter.mView = this
     }
 
+    /**
+     * 注册结果回调
+     */
     override fun onRegisterResult(result: String) {
         toast(result)
+        finish()
     }
 
-    override fun onBackPressed() {
-        val time = System.currentTimeMillis()
-        if (time - pressTime > 2000) {
-            toast("再按一次退出应用")
-            pressTime = time
-        } else {
-            AppManager.instance.exitApp(this)
+    override fun onClick(view: View) {
+        when(view.id) {
+            R.id.mVerifyCodeBtn -> {
+                mVerifyCodeBtn.requestSendVerifyNumber()
+                toast("发送验证码成功") //默认123456
+            }
+
+            R.id.mRegisterBtn -> {
+                mPresenter.register(mMobileEt.text.toString(), mVerifyCodeEt.text.toString(), mPwdEt.text.toString())
+            }
         }
     }
+
+    /**
+     * 判断注册按钮是否可用
+     */
+    private fun isBtnEnable():Boolean {
+        return mMobileEt.text.isNullOrEmpty().not()
+            && mVerifyCodeEt.text.isNullOrEmpty().not()
+            && mPwdEt.text.isNullOrEmpty().not()
+            && mPwdConfirmEt.text.isNullOrEmpty().not()
+    }
+
 }

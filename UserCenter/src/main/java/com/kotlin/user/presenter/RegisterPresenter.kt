@@ -7,6 +7,9 @@ import com.kotlin.user.presenter.view.RegisterView
 import com.kotlin.user.service.UserService
 import javax.inject.Inject
 
+/**
+ * 注册界面 Presenter
+ */
 class RegisterPresenter @Inject constructor(): BasePresenter<RegisterView>() {
 
     @Inject
