@@ -1,6 +1,5 @@
 package com.kotlin.user.ui.activity
 
-import android.os.Bundle
 import com.kotlin.base.ext.enable
 import com.kotlin.base.ext.onClick
 import com.kotlin.base.ui.activity.BaseMvpActivity
@@ -20,17 +19,14 @@ import org.jetbrains.anko.toast
  */
 class ResetPwdActivity : BaseMvpActivity<ResetPwdPresenter>(), ResetPwdView {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reset_pwd)
-
-        initView()
+    override fun getLayoutId(): Int {
+        return R.layout.activity_reset_pwd
     }
 
     /*
         初始化视图
      */
-    private fun initView() {
+    override fun initView() {
         mConfirmBtn.enable(mPwdEt,{isBtnEnable()})
         mConfirmBtn.enable(mPwdConfirmEt,{isBtnEnable()})
 
@@ -41,6 +37,10 @@ class ResetPwdActivity : BaseMvpActivity<ResetPwdPresenter>(), ResetPwdView {
             }
             mPresenter.resetPwd(intent.getStringExtra("mobile"), mPwdEt.text.toString())
         }
+    }
+
+    override fun initData() {
+
     }
 
     /*

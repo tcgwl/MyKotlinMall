@@ -1,6 +1,5 @@
 package com.kotlin.user.ui.activity
 
-import android.os.Bundle
 import android.view.View
 import com.kotlin.base.ext.enable
 import com.kotlin.base.ext.onClick
@@ -21,23 +20,20 @@ import org.jetbrains.anko.toast
  */
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView, View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
-        initView()
+    override fun getLayoutId(): Int {
+        return R.layout.activity_login
     }
 
-    /*
-        初始化视图
-     */
-    private fun initView() {
+    override fun initView() {
         mLoginBtn.enable(mMobileEt,{isBtnEnable()})
         mLoginBtn.enable(mPwdEt,{isBtnEnable()})
 
         mLoginBtn.onClick(this)
         mHeaderBar.getRightView().onClick(this)
         mForgetPwdTv.onClick(this)
+    }
+
+    override fun initData() {
     }
 
     /*
@@ -85,7 +81,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView, View.OnClick
     override fun onLoginResult(result: UserInfo) {
         toast("登录成功")
         UserPrefsUtils.putUserInfo(result)
-//        finish()
         startActivity<UserInfoActivity>()
+        finish()
     }
 }

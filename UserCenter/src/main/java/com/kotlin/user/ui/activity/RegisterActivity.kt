@@ -1,6 +1,5 @@
 package com.kotlin.user.ui.activity
 
-import android.os.Bundle
 import android.view.View
 import com.kotlin.base.ext.enable
 import com.kotlin.base.ext.onClick
@@ -18,15 +17,11 @@ import org.jetbrains.anko.toast
  */
 class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView, View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
-
-        initView()
-
+    override fun getLayoutId(): Int {
+        return R.layout.activity_register
     }
 
-    private fun initView() {
+    override fun initView() {
         mRegisterBtn.enable(mMobileEt, {isBtnEnable()})
         mRegisterBtn.enable(mVerifyCodeEt, {isBtnEnable()})
         mRegisterBtn.enable(mPwdEt, {isBtnEnable()})
@@ -35,6 +30,9 @@ class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView, Vie
         //验证码默认 123456
         mVerifyCodeBtn.onClick(this)
         mRegisterBtn.onClick(this)
+    }
+
+    override fun initData() {
     }
 
     /**
@@ -48,14 +46,6 @@ class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView, Vie
                 .inject(this)
 
         mPresenter.mView = this
-    }
-
-    /**
-     * 注册结果回调
-     */
-    override fun onRegisterResult(result: String) {
-        toast(result)
-        finish()
     }
 
     override fun onClick(view: View) {
@@ -79,6 +69,14 @@ class RegisterActivity : BaseMvpActivity<RegisterPresenter>(), RegisterView, Vie
             && mVerifyCodeEt.text.isNullOrEmpty().not()
             && mPwdEt.text.isNullOrEmpty().not()
             && mPwdConfirmEt.text.isNullOrEmpty().not()
+    }
+
+    /**
+     * 注册结果回调
+     */
+    override fun onRegisterResult(result: String) {
+        toast(result)
+        finish()
     }
 
 }

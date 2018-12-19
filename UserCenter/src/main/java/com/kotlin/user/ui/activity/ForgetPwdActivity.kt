@@ -1,6 +1,5 @@
 package com.kotlin.user.ui.activity
 
-import android.os.Bundle
 import android.view.View
 import com.kotlin.base.ext.enable
 import com.kotlin.base.ext.onClick
@@ -19,23 +18,23 @@ import org.jetbrains.anko.toast
  */
 class ForgetPwdActivity : BaseMvpActivity<ForgetPwdPresenter>(), ForgetPwdView, View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forget_pwd)
-
-        initView()
-
+    override fun getLayoutId(): Int {
+        return R.layout.activity_forget_pwd
     }
 
     /*
         初始化视图
      */
-    private fun initView() {
+    override fun initView() {
         mNextBtn.enable(mMobileEt, {isBtnEnable()})
         mNextBtn.enable(mVerifyCodeEt, {isBtnEnable()})
 
         mVerifyCodeBtn.onClick(this)
         mNextBtn.onClick(this)
+    }
+
+    override fun initData() {
+
     }
 
     /*

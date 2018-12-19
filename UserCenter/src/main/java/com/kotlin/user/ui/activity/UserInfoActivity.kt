@@ -1,6 +1,5 @@
 package com.kotlin.user.ui.activity
 
-import android.os.Bundle
 import com.jph.takephoto.model.TResult
 import com.kotlin.base.common.BaseConstant
 import com.kotlin.base.ext.onClick
@@ -34,15 +33,11 @@ class UserInfoActivity: BaseTakePhotoActivity<UserInfoPresenter>(), UserInfoView
     private var mUserGender:String? = null
     private var mUserSign:String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_info)
-
-        initView()
-        initData()
+    override fun getLayoutId(): Int {
+        return R.layout.activity_user_info
     }
 
-    private fun initView() {
+    override fun initView() {
         mUserIconView.onClick { showAlertView() }
         mHeaderBar.getRightView().onClick {
             mPresenter.editUser(mRemoteFileUrl!!,
@@ -53,7 +48,7 @@ class UserInfoActivity: BaseTakePhotoActivity<UserInfoPresenter>(), UserInfoView
         }
     }
 
-    private fun initData() {
+    override fun initData() {
         mUserIcon = AppPrefsUtils.getString(ProviderConstant.KEY_SP_USER_ICON)
         mUserName = AppPrefsUtils.getString(ProviderConstant.KEY_SP_USER_NAME)
         mUserMobile = AppPrefsUtils.getString(ProviderConstant.KEY_SP_USER_MOBILE)
