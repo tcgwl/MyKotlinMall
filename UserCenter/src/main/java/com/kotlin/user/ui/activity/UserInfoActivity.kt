@@ -1,5 +1,6 @@
 package com.kotlin.user.ui.activity
 
+import android.util.Log
 import com.jph.takephoto.model.TResult
 import com.kotlin.base.common.BaseConstant
 import com.kotlin.base.ext.onClick
@@ -10,6 +11,7 @@ import com.kotlin.provider.common.ProviderConstant
 import com.kotlin.user.R
 import com.kotlin.user.data.protocol.UserInfo
 import com.kotlin.user.injection.component.DaggerUserComponent
+import com.kotlin.user.injection.module.UploadModule
 import com.kotlin.user.injection.module.UserModule
 import com.kotlin.user.presenter.UserInfoPresenter
 import com.kotlin.user.presenter.view.UserInfoView
@@ -75,6 +77,7 @@ class UserInfoActivity: BaseTakePhotoActivity<UserInfoPresenter>(), UserInfoView
         DaggerUserComponent.builder()
                 .activityComponent(mActivityComponent)
                 .userModule(UserModule())
+                .uploadModule(UploadModule())
                 .build()
                 .inject(this)
         mPresenter.mView = this
@@ -89,10 +92,21 @@ class UserInfoActivity: BaseTakePhotoActivity<UserInfoPresenter>(), UserInfoView
      * 获取上传凭证回调
      */
     override fun onGetUploadTokenResult(result: String) {
-        mUploadManager.put(mLocalFileUrl, null,result,object:UpCompletionHandler{
+        mUploadManager.put(mLocalFileUrl, null,result, object:UpCompletionHandler{
             override fun complete(key: String?, info: ResponseInfo?, response: JSONObject?) {
-                mRemoteFileUrl = BaseConstant.IMAGE_SERVER_ADDRESS + response?.get("hash")
-                GlideUtils.loadUrlImage(this@UserInfoActivity, mRemoteFileUrl!!, mUserIconIv)
+                if(info!!.isOK()) {
+                    Log.i("qiniu", "Upload Success")
+                    //七牛域名失效
+                    mRemoteFileUrl = BaseConstant.IMAGE_SERVER_ADDRESS + response?.get("hash")
+                    Log.d("qiniu", "mRemoteFileUrl: $mRemoteFileUrl")
+                    mRemoteFileUrl = mLocalFileUrl
+                    Log.d("qiniu", "mRemoteFileUrl: $mRemoteFileUrl")
+                    GlideUtils.loadUrlImage(this@UserInfoActivity, mRemoteFileUrl!!, mUserIconIv)
+                } else {
+                    Log.i("qiniu", "Upload Fail")
+                    GlideUtils.loadUrlImage(this@UserInfoActivity, mLocalFileUrl!!, mUserIconIv)
+                    //如果失败，这里可以把info信息上报自己的服务器，便于后面分析上传错误原因
+                }
             }
         }, null)
     }
